@@ -4,7 +4,7 @@
 
 [Demo](https://otatar.github.io/mui-admin)
 
-- Username: admin, Password: (what ever you type)
+- Username: admin, Password: (whatever you type)
 
 ## Project setup
 
