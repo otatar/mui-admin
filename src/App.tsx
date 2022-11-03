@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Users from "./pages/Users";
+import Invoices from "./pages/Invoices";
 import ErrorBoundary from "./pages/ErrorBoundary";
 
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
@@ -38,35 +39,42 @@ const App = () => {
   );
 
   //Router
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: (
-        <AuthenticatedRoute>
-          <MainLayout />
-        </AuthenticatedRoute>
-      ),
-      errorElement: <ErrorBoundary />,
-      children: [
-        {
-          element: <Home />,
-          index: true,
-        },
-        {
-          path: "about",
-          element: <About />,
-        },
-        {
-          path: "users",
-          element: <Users />,
-        },
-      ],
-    },
-    {
-      path: "/login",
-      element: <Login />,
-    },
-  ]);
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: (
+          <AuthenticatedRoute>
+            <MainLayout />
+          </AuthenticatedRoute>
+        ),
+        errorElement: <ErrorBoundary />,
+        children: [
+          {
+            element: <Home />,
+            index: true,
+          },
+          {
+            path: "about",
+            element: <About />,
+          },
+          {
+            path: "users",
+            element: <Users />,
+          },
+          {
+            path: "invoices",
+            element: <Invoices />,
+          },
+        ],
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+    ],
+    { basename: "/mui-admin" }
+  );
 
   return (
     <ColorModeContext.Provider value={colorMode}>

@@ -19,6 +19,8 @@ import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import Switch, { SwitchProps } from "@mui/material/Switch";
+import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
@@ -34,8 +36,6 @@ import ListItemText from "@mui/material/ListItemText";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 import MuiLogo from "./MuiLogo";
 import UserMenu from "./UserMenu";
@@ -126,13 +126,61 @@ const Drawer = styled(MuiDrawer, {
   width: 220,
 }));
 
+const ThemeSwitch = styled((props: SwitchProps) => (
+  <Switch disableRipple {...props} />
+))(({ theme }) => ({
+  width: 46,
+  height: 32,
+  padding: 0,
+  "& .MuiSwitch-switchBase": {
+    padding: 0,
+    margin: 2,
+    transitionDuration: "300ms",
+    "&.Mui-checked": {
+      transform: "translateX(16px)",
+      color: "#ffff",
+      "& + .MuiSwitch-track": {
+        opacity: 1,
+        backgroundColor: theme.palette.grey[800],
+      },
+      "& .MuiSwitch-thumb": {
+        width: 24,
+        height: 24,
+        backgroundColor: theme.palette.grey[800],
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="21" width="21" viewBox="0 0 22 22"><path fill="${encodeURIComponent(
+          "#ffffff"
+        )}" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path></svg>')`,
+      },
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxShadow: "none",
+    width: 24,
+    height: 24,
+    backgroundRepeat: "no-repeat",
+    margin: 2,
+    backgroundColor: theme.palette.primary.main,
+    backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="21" width="21" viewBox="0 0 23 23"><path fill="${encodeURIComponent(
+      theme.palette.background.default
+    )}" d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"></path></svg>')`,
+  },
+  "& .MuiSwitch-track": {
+    borderRadius: 46 / 2,
+    backgroundColor: theme.palette.primary.main,
+    border: "2px solid white",
+    opacity: 1,
+    height: 31,
+  },
+}));
+
 interface DrawerListItemProps {
+  drawerOpen: boolean;
   label: string;
   icon?: React.ReactElement;
   to: string;
   children?: DrawerListItemProps[];
   level?: number;
-  onitemClicked?: () => void;
+  onItemClicked?: (parent: boolean) => void;
 }
 
 const drawerItems = [
@@ -171,7 +219,15 @@ const drawerItems = [
 ];
 
 function ListItemLink(props: DrawerListItemProps) {
-  const { icon, label, to, children, level = 1, onitemClicked } = props;
+  const {
+    icon,
+    label,
+    to,
+    children,
+    level = 1,
+    onItemClicked,
+    drawerOpen,
+  } = props;
   const [open, setOpen] = React.useState(false);
   const location = useLocation();
 
@@ -187,14 +243,24 @@ function ListItemLink(props: DrawerListItemProps) {
     [to]
   );
 
+  const activeChildren = () => {
+    const childrenActive = children?.reduce((acc, child) => {
+      return acc || child.to === location.pathname;
+    }, false);
+    return !drawerOpen && childrenActive;
+  };
+
   return (
     <>
       {children ? (
         <li>
           <ListItem
             button
-            selected={location.pathname === to}
-            onClick={() => setOpen(!open)}
+            selected={activeChildren()}
+            onClick={() => {
+              setOpen(!open);
+              onItemClicked?.(true);
+            }}
             sx={{ pl: level * 2 }}
           >
             {icon ? (
@@ -210,16 +276,18 @@ function ListItemLink(props: DrawerListItemProps) {
             />
             {open ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={open && drawerOpen} timeout="auto" unmountOnExit>
             <List component="div">
               {children.map((el: any) => (
                 <ListItemLink
+                  drawerOpen={open}
                   level={level + 1}
                   label={el.label}
                   to={el.to}
                   icon={el.icon}
                   children={el.children}
                   key={el.label}
+                  onItemClicked={onItemClicked}
                 />
               ))}
             </List>
@@ -231,7 +299,7 @@ function ListItemLink(props: DrawerListItemProps) {
           component={renderLink}
           selected={location.pathname === to}
           sx={{ pl: level * 2 }}
-          onClick={onitemClicked}
+          onClick={() => onItemClicked?.(false)}
         >
           {icon ? (
             <ListItemIcon sx={{ color: "primary.main" }}>{icon}</ListItemIcon>
@@ -272,8 +340,9 @@ const MainLayout = () => {
     setOpen(false);
   };
 
-  const handleDrawerToggleMobile = () => {
-    setOpenMobile(!openMobile);
+  const handleOnDrawerItemClicked = (parent: boolean) => {
+    if (!parent) setOpenMobile(false);
+    if (!open) setOpen(true);
   };
 
   const handleLogout = async () => {
@@ -311,12 +380,13 @@ const MainLayout = () => {
     >
       {drawerItems.map((el: any) => (
         <ListItemLink
+          drawerOpen={open}
           label={el.label}
           to={el.to}
           icon={el.icon}
           children={el.children}
           key={el.label}
-          onitemClicked={handleDrawerToggleMobile}
+          onItemClicked={handleOnDrawerItemClicked}
         />
       ))}
     </List>
@@ -337,6 +407,7 @@ const MainLayout = () => {
               ...((mobile || open) && { display: "none" }),
             }}
           >
+            {" "}
             <MenuIcon />
           </IconButton>
           <IconButton
@@ -354,7 +425,7 @@ const MainLayout = () => {
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerToggleMobile}
+            onClick={() => setOpenMobile(true)}
             edge="start"
             sx={{
               marginRight: 5,
@@ -369,17 +440,9 @@ const MainLayout = () => {
             component="div"
             sx={{ flexGrow: 1 }}
           ></Typography>
-          <IconButton
-            sx={{ mr: 2 }}
-            onClick={colorMode.toggleColorMode}
-            color="inherit"
-          >
-            {theme.palette.mode === "dark" ? (
-              <DarkModeIcon />
-            ) : (
-              <LightModeIcon />
-            )}
-          </IconButton>
+          <Tooltip title="Switch theme">
+            <ThemeSwitch sx={{ mr: 2 }} onChange={colorMode.toggleColorMode} />
+          </Tooltip>
           <UserMenu
             username={user.username}
             firstName={user.firstName}
@@ -393,7 +456,7 @@ const MainLayout = () => {
       <MuiDrawer //Drawer for mobile
         variant="temporary"
         open={openMobile}
-        onClose={handleDrawerToggleMobile}
+        onClose={() => setOpenMobile(false)}
         ModalProps={{
           keepMounted: true, // Better open performance on mobile.
         }}
