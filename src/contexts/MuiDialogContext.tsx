@@ -53,7 +53,7 @@ export class DialogContainer extends Component<DialogContainerProps> {
           <DialogActions>
             <Button onClick={this.props.onCancel}>Cancel</Button>
             <Button autoFocus onClick={this.props.onOK}>
-              OK
+              Confirm
             </Button>
           </DialogActions>
         )}

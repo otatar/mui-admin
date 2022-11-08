@@ -2,6 +2,7 @@ import { useState, useMemo, createContext, useContext } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import type {} from "@mui/lab/themeAugmentation";
 
 import DialogProvider from "./contexts/MuiDialogContext";
 
@@ -19,6 +20,7 @@ const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 const App = () => {
   const [mode, setMode] = useState<"light" | "dark">("light");
+
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
@@ -33,6 +35,15 @@ const App = () => {
       createTheme({
         palette: {
           mode,
+        },
+        components: {
+          MuiTimeline: {
+            styleOverrides: {
+              root: {
+                //backgroundColor: "red",
+              },
+            },
+          },
         },
       }),
     [mode]
