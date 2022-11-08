@@ -11,7 +11,10 @@ const AgentList = () => {
     <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar alt="Remy Sharp" src="/avatars/1.jpg" />
+          <Avatar
+            alt="Remy Sharp"
+            src={new URL("../assets/avatars/1.jpg", import.meta.url).href}
+          />
         </ListItemAvatar>
         <ListItemText
           primary="John Doe"
@@ -33,7 +36,10 @@ const AgentList = () => {
       <Divider variant="inset" component="li" />
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar alt="Travis Howard" src="/avatars/2.jpg" />
+          <Avatar
+            alt="Travis Howard"
+            src={new URL("../assets/avatars/2.jpg", import.meta.url).href}
+          />
         </ListItemAvatar>
         <ListItemText
           primary="Agent Smith"
@@ -55,7 +61,10 @@ const AgentList = () => {
       <Divider variant="inset" component="li" />
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar alt="Cindy Baker" src="/avatars/3.jpg" />
+          <Avatar
+            alt="Cindy Baker"
+            src={new URL("../assets/avatars/3.jpg", import.meta.url).href}
+          />
         </ListItemAvatar>
         <ListItemText
           primary="Cindy Baker"
@@ -77,7 +86,7 @@ const AgentList = () => {
       <Divider variant="inset" component="li" />
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+          <Avatar alt="Cindy Baker" src="" />
         </ListItemAvatar>
         <ListItemText
           primary="Jane Doe"
